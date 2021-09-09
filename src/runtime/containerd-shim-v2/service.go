@@ -108,6 +108,7 @@ type exit struct {
 	execid    string
 	pid       uint32
 	status    int
+	offload   string
 	timestamp time.Time
 }
 
@@ -390,6 +391,7 @@ func (s *service) Create(ctx context.Context, r *taskAPI.CreateTaskRequest) (_ *
 		}
 		container := res.container
 		container.status = task.StatusCreated
+		container.offload = 
 
 		s.containers[r.ID] = container
 
