@@ -358,7 +358,7 @@ func (s *service) Cleanup(ctx context.Context) (_ *taskAPI.DeleteResponse, err e
 }
 
 // Create a new sandbox or container with the underlying OCI runtime
-func (s *service) Create(ctx context.Context, r *taskAPI.CreateTaskRequest) (_ *taskAPI.CreateTaskResponse, err error) {
+func (s *service) Create(ctx context.Context, r *taskAPI.CreateTaskRequest) (ctx context.Context, r *taskAPI.OffloadTaskRequest) (_ *taskAPI.CreateTaskResponse, err error) (_ *taskAPI.OffloadTaskResponse, err error) {
 	start := time.Now()
 	defer func() {
 		err = toGRPC(err)
@@ -411,6 +411,12 @@ func (s *service) Create(ctx context.Context, r *taskAPI.CreateTaskRequest) (_ *
 
 		return &taskAPI.CreateTaskResponse{
 			Pid: s.hpid,
+			ContainerID: r.ID
+		}, nil
+
+		return &taskAPI.OffloadTaskResponse{
+			Pid: s.hpid,
+			ContainerID: r.ID
 		}, nil
 	}
 }

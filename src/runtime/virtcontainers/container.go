@@ -885,6 +885,12 @@ func (c *Container) create(ctx context.Context) (err error) {
 	}
 	c.process = *process
 
+	process, err := c.sandbox.agent.createOffloadContainer(ctx, c.sandbox, c)
+	if err != nil {
+		return err
+	}
+	c.process = *process
+
 	// lazy attach device after createContainer for q35
 	if machineType == QemuQ35 && len(delayAttachedDevs) > 0 {
 		c.Logger().WithFields(logrus.Fields{

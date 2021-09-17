@@ -111,6 +111,7 @@ const (
 	grpcCreateSandboxRequest     = "grpc.CreateSandboxRequest"
 	grpcDestroySandboxRequest    = "grpc.DestroySandboxRequest"
 	grpcCreateContainerRequest   = "grpc.CreateContainerRequest"
+	grpcOffloadContainerRequest  = "grpc.OffloadContainerRequest"
 	grpcStartContainerRequest    = "grpc.StartContainerRequest"
 	grpcRemoveContainerRequest   = "grpc.RemoveContainerRequest"
 	grpcSignalProcessRequest     = "grpc.SignalProcessRequest"
@@ -1413,6 +1414,16 @@ func (k *kataAgent) createContainer(ctx context.Context, sandbox *Sandbox, c *Co
 		Devices:      ctrDevices,
 		OCI:          grpcSpec,
 		SandboxPidns: sharedPidNs,
+	}
+
+	req := &grpc.OffloadContainerRequest{
+		ContainerId:  c.id,
+		ExecId:       c.id,
+		Storages:     ctrStorages,
+		Devices:      ctrDevices,
+		OCI:          grpcSpec,
+		SandboxPidns: sharedPidNs,
+		Offload:	  offload,
 	}
 
 	if _, err = k.sendReq(ctx, req); err != nil {

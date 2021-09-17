@@ -110,6 +110,14 @@ impl AgentService {
 
         verify_cid(&cid)?;
 
+    async fn do_offload_container(
+        &self,
+        req: protocols::agent::OffloadContainerRequest,
+    ) -> Result<()> {
+        let cid = req.container_id.clone();
+    
+        verify_cid(&cid)?;
+
         let mut oci_spec = req.OCI.clone();
         let use_sandbox_pidns = req.get_sandbox_pidns();
 
@@ -518,6 +526,17 @@ impl protocols::agent_ttrpc::AgentService for AgentService {
         req: protocols::agent::CreateContainerRequest,
     ) -> ttrpc::Result<Empty> {
         match self.do_create_container(req).await {
+            Err(e) => Err(ttrpc_error(ttrpc::Code::INTERNAL, e.to_string())),
+            Ok(_) => Ok(Empty::new()),
+        }
+    }
+
+    async fn create_offload_container(
+        &self,
+        _ctx: &TtrpcContext,
+        req: protocols::agent::OffloadContainerRequest,
+    ) -> ttrpc::Result<Empty> {
+        match self.do_offload_container(req).await {
             Err(e) => Err(ttrpc_error(ttrpc::Code::INTERNAL, e.to_string())),
             Ok(_) => Ok(Empty::new()),
         }

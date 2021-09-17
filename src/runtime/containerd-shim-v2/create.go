@@ -32,7 +32,7 @@ import (
 	"github.com/kata-containers/kata-containers/src/runtime/virtcontainers/pkg/oci"
 )
 
-func create(ctx context.Context, s *service, r *taskAPI.CreateTaskRequest) (*container, error) {
+func create(ctx context.Context, s *service, r *taskAPI.CreateTaskRequest) (ctx context.Context, s *service, r *taskAPI.OffloadTaskRequest) (*container, error) {
 	rootFs := vc.RootFs{}
 	if len(r.Rootfs) == 1 {
 		m := r.Rootfs[0]
@@ -150,7 +150,7 @@ func create(ctx context.Context, s *service, r *taskAPI.CreateTaskRequest) (*con
 	return container, nil
 }
 
-func loadSpec(r *taskAPI.CreateTaskRequest) (*specs.Spec, string, error) {
+func loadSpec(r *taskAPI.CreateTaskRequest) (r *taskAPI.OffloadTaskRequest) (*specs.Spec, string, error) {
 	// Checks the MUST and MUST NOT from OCI runtime specification
 	bundlePath, err := validBundle(r.ID, r.Bundle)
 	if err != nil {
@@ -169,7 +169,7 @@ func loadSpec(r *taskAPI.CreateTaskRequest) (*specs.Spec, string, error) {
 // 1. podsandbox annotation
 // 2. shimv2 create task option
 // 3. environment
-func loadRuntimeConfig(s *service, r *taskAPI.CreateTaskRequest, anno map[string]string) (*oci.RuntimeConfig, error) {
+func loadRuntimeConfig(s *service, r *taskAPI.CreateTaskRequest, anno map[string]string) (s *service, r *taskAPI.OffloadTaskRequest, anno map[string]string) (*oci.RuntimeConfig, error) {
 	if s.config != nil {
 		return s.config, nil
 	}
@@ -205,7 +205,7 @@ func loadRuntimeConfig(s *service, r *taskAPI.CreateTaskRequest, anno map[string
 	return &runtimeConfig, nil
 }
 
-func checkAndMount(s *service, r *taskAPI.CreateTaskRequest) (bool, error) {
+func checkAndMount(s *service, r *taskAPI.CreateTaskRequest) (s *service, r *taskAPI.OffloadTaskRequest) (bool, error) {
 	if len(r.Rootfs) == 1 {
 		m := r.Rootfs[0]
 

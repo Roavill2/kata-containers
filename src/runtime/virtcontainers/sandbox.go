@@ -1169,6 +1169,72 @@ func (s *Sandbox) CreateContainer(ctx context.Context, contConfig ContainerConfi
 	return c, nil
 }
 
+func (s *Sandbox) CreateOffloadContainer(ctx context.Context, contConfig ContainerConfig) (VCContainer, error) {
+	// Update sandbox config to include the new container's config
+	s.config.Containers = append(s.config.Containers, contConfig)
+
+	var err error
+
+	defer func() {
+		if err != nil {
+			if len(s.config.Containers) > 0 {
+				// delete container config
+				s.config.Containers = s.config.Containers[:len(s.config.Containers)-1]
+			}
+		}
+	}()
+
+	// Create the container object, add devices to the sandbox's device-manager:
+	c, err := newContainer(ctx, s, &s.config.Containers[len(s.config.Containers)-1])
+	if err != nil {
+		return nil, err
+	}
+
+	// create and start the container
+	err = c.create(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	// Add the container to the containers list in the sandbox.
+	if err = s.addContainer(c); err != nil {
+		return nil, err
+	}
+
+	defer func() {
+		// Rollback if error happens.
+		if err != nil {
+			logger := s.Logger().WithFields(logrus.Fields{"container-id": c.id, "sandox-id": s.id, "rollback": true})
+			logger.WithError(err).Error("Cleaning up partially created container")
+
+			if err2 := c.stop(ctx, true); err2 != nil {
+				logger.WithError(err2).Error("Could not delete container")
+			}
+
+			logger.Debug("Removing stopped container from sandbox store")
+			s.removeContainer(c.id)
+		}
+	}()
+
+	// Sandbox is responsible to update VM resources needed by Containers
+	// Update resources after having added containers to the sandbox, since
+	// container status is requiered to know if more resources should be added.
+	err = s.updateResources(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	if err = s.cgroupsUpdate(ctx); err != nil {
+		return nil, err
+	}
+
+	if err = s.storeSandbox(ctx); err != nil {
+		return nil, err
+	}
+
+	return c, nil
+}
+
 // StartContainer starts a container in the sandbox
 func (s *Sandbox) StartContainer(ctx context.Context, containerID string) (VCContainer, error) {
 	// Fetch the container.
@@ -1470,6 +1536,7 @@ func (s *Sandbox) createContainers(ctx context.Context) error {
 
 	return nil
 }
+
 
 // Start starts a sandbox. The containers that are making the sandbox
 // will be started.

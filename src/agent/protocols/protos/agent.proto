@@ -20,6 +20,7 @@ import "google/protobuf/empty.proto";
 service AgentService {
 	// execution
 	rpc CreateContainer(CreateContainerRequest) returns (google.protobuf.Empty);
+	rpc CreateContainer(OffloadContainerRequest) returns (google.protobuf.Empty);
 	rpc StartContainer(StartContainerRequest) returns (google.protobuf.Empty);
 
 	// RemoveContainer will tear down an existing container by forcibly terminating
@@ -84,6 +85,23 @@ message CreateContainerRequest {
 	repeated Device devices = 4;
 	repeated Storage storages = 5;
 	Spec OCI = 6;
+
+	// This field is used to indicate if the container needs to join
+	// sandbox shared pid ns or create a new namespace. This field is
+	// meant to override the NEWPID config settings in the OCI spec.
+	// The agent would receive an OCI spec with PID namespace cleared
+	// out altogether and not just the pid ns path.
+	bool sandbox_pidns = 7;
+}
+
+message OffloadContainerRequest {
+	string container_id = 1;
+	string exec_id = 2;
+	StringUser string_user = 3;
+	repeated Device devices = 4;
+	repeated Storage storages = 5;
+	Spec OCI = 6;
+	string offload = 8;
 
 	// This field is used to indicate if the container needs to join
 	// sandbox shared pid ns or create a new namespace. This field is
