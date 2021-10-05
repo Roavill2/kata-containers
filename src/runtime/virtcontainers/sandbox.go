@@ -1182,6 +1182,9 @@ func (s *Sandbox) CreateOffloadContainer(ctx context.Context, contConfig Contain
 				s.config.Containers = s.config.Containers[:len(s.config.Containers)-1]
 			}
 		}
+		if imageOffload != false {
+			StartContainer()
+		}
 	}()
 
 	// Create the container object, add devices to the sandbox's device-manager:
