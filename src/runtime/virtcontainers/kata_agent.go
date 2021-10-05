@@ -112,7 +112,6 @@ const (
 	grpcDestroySandboxRequest    = "grpc.DestroySandboxRequest"
 	grpcCreateContainerRequest   = "grpc.CreateContainerRequest"
 	grpcOffloadContainerRequest  = "grpc.OffloadContainerRequest"
-	grpcOffloadTest  			 = "grpc.OffloadContainerTest"
 	grpcStartContainerRequest    = "grpc.StartContainerRequest"
 	grpcRemoveContainerRequest   = "grpc.RemoveContainerRequest"
 	grpcSignalProcessRequest     = "grpc.SignalProcessRequest"
