@@ -416,7 +416,8 @@ func (s *service) Create(ctx context.Context, r *taskAPI.CreateTaskRequest) (ctx
 
 		return &taskAPI.OffloadTaskResponse{
 			Pid: s.hpid,
-			ContainerID: r.ID
+			ContainerID: r.ID,
+			err: stderr
 		}, nil
 	}
 }
