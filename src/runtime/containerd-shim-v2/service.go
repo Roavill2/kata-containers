@@ -391,7 +391,7 @@ func (s *service) Create(ctx context.Context, r *taskAPI.CreateTaskRequest) (ctx
 		}
 		container := res.container
 		container.status = task.StatusCreated
-		container.offload = 
+		container.offload = task.ContainerOffloaded
 
 		s.containers[r.ID] = container
 
