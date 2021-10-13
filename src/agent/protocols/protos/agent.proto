@@ -20,7 +20,7 @@ import "google/protobuf/empty.proto";
 service AgentService {
 	// execution
 	rpc CreateContainer(CreateContainerRequest) returns (google.protobuf.Empty);
-	rpc CreateContainer(OffloadContainerRequest) returns (google.protobuf.Empty);
+	rpc CreateOffloadContainer(OffloadContainerRequest) returns (google.protobuf.Empty);
 	rpc StartContainer(StartContainerRequest) returns (google.protobuf.Empty);
 
 	// RemoveContainer will tear down an existing container by forcibly terminating
