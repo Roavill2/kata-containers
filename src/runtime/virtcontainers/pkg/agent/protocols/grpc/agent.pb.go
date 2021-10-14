@@ -77,7 +77,51 @@ func (m *CreateContainerRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_CreateContainerRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_CreateContainerRequest proto.InternalMessageInfo
+type OffloadContainerRequest struct {
+	ContainerId string      `protobuf:"bytes,1,opt,name=container_id,json=containerId,proto3" json:"container_id,omitempty"`
+	ExecId      string      `protobuf:"bytes,2,opt,name=exec_id,json=execId,proto3" json:"exec_id,omitempty"`
+	StringUser  *StringUser `protobuf:"bytes,3,opt,name=string_user,json=stringUser,proto3" json:"string_user,omitempty"`
+	Devices     []*Device   `protobuf:"bytes,4,rep,name=devices,proto3" json:"devices,omitempty"`
+	Storages    []*Storage  `protobuf:"bytes,5,rep,name=storages,proto3" json:"storages,omitempty"`
+	OCI         *Spec       `protobuf:"bytes,6,opt,name=OCI,proto3" json:"OCI,omitempty"`
+	SandboxPidns         bool     `protobuf:"varint,7,opt,name=sandbox_pidns,json=sandboxPidns,proto3" json:"sandbox_pidns,omitempty"`
+	Offload		 		 bool     `protobuf:"bytes,8,opt,name=offload,json=offload,proto3" json:"offload,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *OffloadContainerRequest) Reset()      { *m = OffloadContainerRequest{} }
+func (*OffloadContainerRequest) ProtoMessage() {}
+func (*OffloadContainerRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_c1460208c38ccf5e, []int{0}
+}
+func (m *OffloadContainerRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *OffloadContainerRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_OffloadContainerRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *OffloadContainerRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_OffloadContainerRequest.Merge(m, src)
+}
+func (m *OffloadContainerRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *OffloadContainerRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_OffloadContainerRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_OffloadContainerRequest proto.InternalMessageInfo
 
 type StartContainerRequest struct {
 	ContainerId          string   `protobuf:"bytes,1,opt,name=container_id,json=containerId,proto3" json:"container_id,omitempty"`
