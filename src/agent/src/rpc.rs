@@ -110,14 +110,6 @@ impl AgentService {
 
         verify_cid(&cid)?;
 
-    async fn do_offload_container(
-        &self,
-        req: protocols::agent::OffloadContainerRequest,
-    ) -> Result<()> {
-        let cid = req.container_id.clone();
-    
-        verify_cid(&cid)?;
-
         let mut oci_spec = req.OCI.clone();
         let use_sandbox_pidns = req.get_sandbox_pidns();
 
@@ -207,6 +199,15 @@ impl AgentService {
         info!(sl!(), "created container!");
 
         Ok(())
+    }
+
+    async fn do_offload_container(
+        &self,
+        req: protocols::agent::OffloadContainerRequest,
+    ) -> Result<()> {
+        let cid = req.container_id.clone();
+    
+        verify_cid(&cid)?;
     }
 
     async fn do_start_container(&self, req: protocols::agent::StartContainerRequest) -> Result<()> {
@@ -309,6 +310,15 @@ impl AgentService {
         remove_container_resources(&mut sandbox)?;
 
         Ok(())
+    }
+
+    async fn do_offload_container(
+        &self,
+        req: protocols::agent::OffloadContainerRequest,
+    ) -> Result<()> {
+        let cid = req.container_id.clone();
+    
+        verify_cid(&cid)?;
     }
 
     async fn do_exec_process(&self, req: protocols::agent::ExecProcessRequest) -> Result<()> {
