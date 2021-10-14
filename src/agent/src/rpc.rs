@@ -325,15 +325,6 @@ impl AgentService {
         Ok(())
     }
 
-    async fn do_offload_container(
-        &self,
-        req: protocols::agent::OffloadContainerRequest,
-    ) -> Result<()> {
-        let cid = req.container_id.clone();
-    
-        verify_cid(&cid)?;
-    }
-
     async fn do_exec_process(&self, req: protocols::agent::ExecProcessRequest) -> Result<()> {
         let cid = req.container_id.clone();
         let exec_id = req.exec_id.clone();
