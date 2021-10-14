@@ -208,6 +208,19 @@ impl AgentService {
         let cid = req.container_id.clone();
     
         verify_cid(&cid)?;
+        let mut oci_spec = req.OCI.clone();
+        let use_sandbox_pidns = req.get_sandbox_pidns();
+
+        let sandbox;
+        let mut s;
+
+        let mut oci = match oci_spec.as_mut() {
+            Some(spec) => rustjail::grpc_to_oci(spec),
+            None => {
+                error!(sl!(), "no oci spec in the create container request!");
+                return Err(anyhow!(nix::Error::from_errno(nix::errno::Errno::EINVAL)));
+            }
+        };
     }
 
     async fn do_start_container(&self, req: protocols::agent::StartContainerRequest) -> Result<()> {
